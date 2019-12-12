@@ -463,11 +463,19 @@ _build_vsrc_pipeline (GaeguliPipeline * self, GError ** error)
   g_autoptr (GError) internal_err = NULL;
   g_autoptr (GstElement) tee = NULL;
   g_autoptr (GstPad) tee_sink = NULL;
+  const gchar *videoconvert_str = NULL;
 
   src_description = _get_source_description (self);
 
+  if (self->encoding_method == GAEGULI_ENCODING_METHOD_NVIDIA_TX1) {
+    videoconvert_str = GAEGULI_PIPELINE_NVIDIA_TX1_VIDEOCONVERT_STR;
+  } else {
+    videoconvert_str = GAEGULI_PIPELINE_GENERAL_VIDEOCONVERT_STR;
+  }
+
   /* FIXME: what if zero-copy */
-  vsrc_str = g_strdup_printf (GAEGULI_PIPELINE_VSRC_STR, src_description);
+  vsrc_str = g_strdup_printf (GAEGULI_PIPELINE_VSRC_STR, src_description,
+      videoconvert_str);
 
   g_debug ("trying to create video source pipeline (%s)", vsrc_str);
   self->vsrc = gst_parse_launch (vsrc_str, &internal_err);

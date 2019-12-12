@@ -26,22 +26,28 @@
    \"mode\": %" G_GINT32_FORMAT " \
 }"
 
-#define GAEGULI_PIPELINE_VSRC_STR       "%s ! capsfilter name=caps ! decodebin ! clockoverlay name=overlay ! tee name=tee allow-not-linked=1 "
+#define GAEGULI_PIPELINE_VSRC_STR       "%s ! capsfilter name=caps ! decodebin ! %s ! clockoverlay name=overlay ! tee name=tee allow-not-linked=1 "
+
+#define GAEGULI_PIPELINE_GENERAL_VIDEOCONVERT_STR    "\
+        videoconvert ! video/x-raw,format=I420"
 
 #define GAEGULI_PIPELINE_GENERAL_H264ENC_STR    "\
-        queue name=enc_first ! videoconvert ! x264enc tune=zerolatency bitrate=%d ! \
+        queue name=enc_first ! x264enc tune=zerolatency bitrate=%d ! \
         h264parse ! queue "
 
 #define GAEGULI_PIPELINE_GENERAL_H265ENC_STR    "\
-        queue name=enc_first ! videoconvert ! x265enc tune=zerolatency bitrate=%d ! \
+        queue name=enc_first ! x265enc tune=zerolatency bitrate=%d ! \
         h265parse ! queue "
 
+#define GAEGULI_PIPELINE_NVIDIA_TX1_VIDEOCONVERT_STR    "\
+        nvvidconv ! video/x-raw(memory:NVMM),format=I420"
+
 #define GAEGULI_PIPELINE_NVIDIA_TX1_H264ENC_STR    "\
-        queue name=enc_first ! nvvidconv ! video/x-raw(memory:NVMM),format=I420 ! \
+        queue name=enc_first ! \
         omxh264enc insert-sps-pps=true insert-vui=true control-rate=1 bitrate=%d ! queue "
 
 #define GAEGULI_PIPELINE_NVIDIA_TX1_H265ENC_STR    "\
-        queue name=enc_first ! nvvidconv ! video/x-raw(memory:NVMM),format=I420 ! \
+        queue name=enc_first ! \
         omxh264enc insert-sps-pps=true insert-vui=true control-rate=1 bitrate=%d ! queue "
 
 #define GAEGULI_PIPELINE_MUXSINK_STR    "\
